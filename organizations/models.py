@@ -3,14 +3,8 @@ from gst_field.modelfields import GSTField, PANField
 from django.core.validators import RegexValidator
 from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
-from .models import *
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser
-import secrets
 
 # initializing size of string  
-def password_generator():
-    res = secrets.token_hex(10)
-    return str(res)
 
 GST_STATUS = [
         ('registered_dealer', 'Registered Dealer'),
@@ -179,53 +173,3 @@ class LocationBranch(models.Model):
 
     def __str__(self):
         return self.branch_name
-
-# class Users(models.Model):
-#     class Types(models.TextChoices):
-#         CUSTOMER= "CUSTOMER", "CUSTOMER"
-#         EMPLOYEE= "EMPLOYEE", "EMPLOYEE"        
-
-#     name = models.CharField(max_length=255)
-#     user_type = models.CharField(max_length=50, choices=Types.choices)
-#     org_loc = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
-#     loc_banch = models.ForeignKey(LocationBranch, on_delete=models.CASCADE, null=True)
-#     email = models.EmailField()
-#     password = models.CharField(max_length=255, default=password_generator)
-    
-#     USERNAME_FIELD = 'email'
-
-#     def get_absolute_url(self):
-#         return reverse("users:detail", kwargs={"email": self.email})
-    
-# class EmployeeManager(models.Manager):
-#     def get_queryset(self, *args, **kwargs):
-#         return super().get_queryset(*args, **kwargs).filter(user_type=Users.Types.EMPLOYEE)
-
-# class CustomerManager(models.Manager):
-#     def get_queryset(self, *args, **kwargs):
-#         return super().get_queryset(*args, **kwargs).filter(user_type=Users.Types.CUSTOMER)
-
-# class CUSTOMER(Users):
-#     objects = CustomerManager()
-    
-#     class Meta:
-#         proxy = True
-
-#     def save(self, *args, **kwargs):
-#        if not self.pk:
-#             self.user_type = Users.Types.CUSTOMER
-
-#        return super().save(*args, **kwargs)
-
-# class EMPLOYEE(Users):
-#     objects = EmployeeManager()
-    
-#     class Meta:
-#         proxy = True
-
-
-#     def save(self, *args, **kwargs):
-#        if not self.pk:
-#             self.user_type = Users.Types.EMPLOYEE
-
-#        return super().save(*args, **kwargs)

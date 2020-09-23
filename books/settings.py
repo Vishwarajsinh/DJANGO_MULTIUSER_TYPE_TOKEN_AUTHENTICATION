@@ -139,11 +139,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-DJOSER = {
-    'LOGIN_FIELD': 'email',
-    'USER_CREATE_PASSWORD_RETYPE': True,
-}
-
 CORS_ORIGIN_WHITELIST = [
     "https://example.com",
     "https://sub.example.com",
@@ -173,18 +168,3 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-AUTHENTICATION_BACKENDS = (
-    ('django.contrib.auth.backends.ModelBackend'),
-)
-
-# Add two new backends under default authentication
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
-
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
