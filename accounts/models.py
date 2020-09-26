@@ -2,7 +2,6 @@ from django.db import models
 from datetime import datetime, timedelta
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from gst_field.modelfields import GSTField, PANField
-
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -36,9 +35,6 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
-
-    
-
 class OwnerManager(BaseUserManager):
  
     def create_owner(self, username, email, company_name, GST, PAN, password=None):
@@ -50,8 +46,8 @@ class OwnerManager(BaseUserManager):
                     PAN = PAN, 
                     email=self.normalize_email(email),
                 )
-        owner.is_superuser = True
         owner.is_staff = True
+        owner.has_perm('organizations.view_organizations')
         owner.set_password(password)
         owner.save()
         return owner 
@@ -65,6 +61,7 @@ class ExecutiveManager(BaseUserManager):
                           email=self.normalize_email(email),
                           designation = designation, 
                           department = department)
+        executive.is_staff = True
         executive.set_password(password)
         executive.save()
         return executive
@@ -75,21 +72,29 @@ class EmployeeManager(BaseUserManager):
     def create_employee(self, username, email, role, department, password=None):
         if email is None:
             raise TypeError('Users must have an email address.')
-        employee = Employee(first_name=first_name, last_name=last_name, 
+        employee = Employee(username = username, 
                             email=self.normalize_email(email),
-                            designation=designation, company=company)
+                            role=role, department=department)
         employee.set_password(password)
         employee.save()
         return employee
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
+    USER_TYPES = (
+       ("Owner", "Owner"),
+       ("Executive", "Executive"),
+       ("Employee", "Employee")
+    )
+
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
+    user_type = models.CharField(max_length=50, choices=USER_TYPES, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
  

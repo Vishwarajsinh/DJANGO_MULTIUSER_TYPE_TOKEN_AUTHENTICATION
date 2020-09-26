@@ -47,6 +47,7 @@ def ExecutiveRegistration(request):
         data = serializer.errors
     return Response(data)
 
+
 @decorators.api_view(["POST"])
 @decorators.permission_classes([permissions.AllowAny])
 def EmployeeRegistration(request):
